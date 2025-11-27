@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: monadverse-verification
+    runtime: node
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: DISCORD_CLIENT_ID
+        sync: false
+      - key: GUILD_ID
+        value: "1260293177181736981"
+      - key: ROLE_ID
+        value: "1443635702238544046"
+      - key: RPC_URL
+        value: "https://monad-mainnet.drpc.org"
+      - key: NFT_CONTRACT
+        value: "0x458e467F911b3b99F24Ec8b5A85e68745c83155e"
+      - key: BASE_URL
+        value: "https://monadverse-verification.onrender.com"
+      - key: NODE_ENV
+        value: production
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+    healthCheckPath: /health
