@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const { initDb } = require('./database/db');
 const discordClient = require('./bot/client');
 const verifyRoutes = require('./routes/verify');
 const { startScheduler } = require('./services/scheduler');
@@ -46,28 +47,40 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Start the application
+async function start() {
+  // Initialize database first
+  await initDb();
+  console.log('Database initialized');
 
-// Login Discord bot
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
-if (!DISCORD_TOKEN) {
-  console.error('ERROR: DISCORD_TOKEN is not set in environment variables');
-  process.exit(1);
+  // Start the server
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+
+  // Login Discord bot
+  const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+  if (!DISCORD_TOKEN) {
+    console.error('ERROR: DISCORD_TOKEN is not set in environment variables');
+    process.exit(1);
+  }
+
+  discordClient.login(DISCORD_TOKEN)
+    .then(() => {
+      console.log('Discord bot login initiated...');
+      // Start the scheduler after bot is ready
+      startScheduler();
+    })
+    .catch((error) => {
+      console.error('Failed to login to Discord:', error);
+      process.exit(1);
+    });
 }
 
-discordClient.login(DISCORD_TOKEN)
-  .then(() => {
-    console.log('Discord bot login initiated...');
-    // Start the scheduler after bot is ready
-    startScheduler();
-  })
-  .catch((error) => {
-    console.error('Failed to login to Discord:', error);
-    process.exit(1);
-  });
+start().catch((error) => {
+  console.error('Failed to start application:', error);
+  process.exit(1);
+});
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

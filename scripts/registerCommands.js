@@ -5,8 +5,7 @@
 
 require('dotenv').config();
 
-const { REST, Routes } = require('discord.js');
-const verifyCommand = require('../src/bot/commands/verifymonadversenft');
+const { REST, Routes, SlashCommandBuilder } = require('discord.js');
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -20,8 +19,13 @@ if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID || !GUILD_ID) {
   process.exit(1);
 }
 
+// Define command directly to avoid loading database
+const verifyCommand = new SlashCommandBuilder()
+  .setName('verifymonadversenft')
+  .setDescription('Verify your Monadverse NFT ownership to get the holder role');
+
 const commands = [
-  verifyCommand.data.toJSON()
+  verifyCommand.toJSON()
 ];
 
 const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
