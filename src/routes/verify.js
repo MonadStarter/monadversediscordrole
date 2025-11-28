@@ -27,7 +27,13 @@ router.get('/check-token', (req, res) => {
     return res.status(410).json({ error: 'Token has expired. Please run /verifymonadversenft again in Discord.' });
   }
 
-  res.json({ valid: true });
+  // Check if already verified
+  const isVerified = !!verification.wallet_address;
+  const wallet = isVerified
+    ? `${verification.wallet_address.slice(0, 6)}...${verification.wallet_address.slice(-4)}`
+    : null;
+
+  res.json({ valid: true, alreadyVerified: isVerified, wallet });
 });
 
 /**

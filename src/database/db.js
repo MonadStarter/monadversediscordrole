@@ -141,5 +141,10 @@ module.exports = {
   clearWallet(discordId) {
     db.run('UPDATE verifications SET wallet_address = NULL, verified_at = NULL WHERE discord_id = ?', [discordId]);
     saveDb();
+  },
+
+  // Remove wallet (alias for clearWallet, used when user disconnects)
+  removeWallet(discordId) {
+    this.clearWallet(discordId);
   }
 };

@@ -19,8 +19,25 @@ client.once('ready', () => {
   roleManager.setClient(client);
 });
 
-// Handle interaction (slash commands)
+// Handle interaction (slash commands and buttons)
 client.on('interactionCreate', async (interaction) => {
+  // Handle button interactions
+  if (interaction.isButton()) {
+    try {
+      // Route to the verify command's button handler
+      if (interaction.customId === 'remove_wallet') {
+        await verifyCommand.handleButton(interaction);
+      }
+    } catch (error) {
+      console.error('Error handling button interaction:', error);
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({ content: 'Something went wrong. Please try again.', ephemeral: true });
+      }
+    }
+    return;
+  }
+
+  // Handle slash commands
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);

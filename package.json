@@ -8,6 +8,7 @@
     "register": "node scripts/registerCommands.js"
   },
   "dependencies": {
+    "@privy-io/js-sdk-core": "^0.58.1",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "ethers": "^6.11.1",
