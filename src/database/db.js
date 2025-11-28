@@ -2,9 +2,9 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-// Use /data directory on Render (persistent disk), fallback to local for development
+// Use /var/data directory on Render (persistent disk), fallback to local for development
 const dbPath = process.env.NODE_ENV === 'production'
-  ? '/data/verifications.db'
+  ? '/var/data/verifications.db'
   : path.join(__dirname, '../../verifications.db');
 
 let db = null;
